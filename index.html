@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WebCraft — Научу кодить крутые сайты нейронкой</title>
+<meta name="description" content="Курс: создание сайтов с помощью нейросетей. Крутые сайты за 10–20 минут. Всего 250 ₽." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   RESET & VARS
+============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-0: #050305;
+  --bg-1: #0d0407;
+  --bg-2: #150408;
+  --red-0: #ff0a3c;
+  --red-1: #d10029;
+  --red-2: #8a0018;
+  --red-3: #4a000c;
+  --pink: #ff3d6b;
+  --accent: #ff0a3c;
+  --text-0: #ffffff;
+  --text-1: #d8d0d4;
+  --text-2: #8a7f85;
+  --border: rgba(255, 10, 60, 0.18);
+  --border-hi: rgba(255, 10, 60, 0.55);
+  --glow: 0 0 40px rgba(255, 10, 60, 0.4);
+  --glow-strong: 0 0 90px rgba(255, 10, 60, 0.7);
+  --font-h: 'Unbounded', sans-serif;
+  --font-b: 'Manrope', sans-serif;
+  --font-q: 'Playfair Display', serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg-0);
+  color: var(--text-0);
+  overflow-x: hidden;
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -3;
+  background:
+    radial-gradient(ellipse at 15% 10%, rgba(255, 10, 60, 0.22), transparent 45%),
+    radial-gradient(ellipse at 85% 90%, rgba(200, 0, 40, 0.28), transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(30, 0, 8, 0.9), transparent 75%),
+    linear-gradient(135deg, #050305 0%, #0d0407 40%, #150408 70%, #050305 100%);
+}
+
+#stars {
+  position: fixed; inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.014) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+}
+
+/* ============================================================
+   NAV
+============================================================ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 18px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, rgba(5,3,5,0.9) 0%, rgba(5,3,5,0.5) 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: var(--font-h);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.logo::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--red-0);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--red-0), 0 0 40px var(--red-0);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.nav-links { display: flex; gap: 30px; align-items: center; }
+.nav-links a {
+  color: var(--text-1); text-decoration: none;
+  font-size: 13px; font-weight: 500; letter-spacing: 1.5px;
+  text-transform: uppercase; transition: color .3s ease;
+  position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; left: 0; bottom: -4px;
+  width: 0; height: 1px;
+  background: var(--red-0);
+  transition: width .35s var(--ease);
+}
+.nav-links a:hover { color: var(--red-0); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  padding: 10px 22px;
+  border: 1px solid var(--border-hi);
+  border-radius: 30px;
+  background: rgba(255,10,60,0.08);
+  color: var(--red-0) !important;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  text-decoration: none;
+  transition: all .35s var(--ease);
+}
+.nav-cta:hover {
+  background: linear-gradient(135deg, var(--red-0), var(--red-1));
+  color: #fff !important;
+  box-shadow: var(--glow);
+  border-color: transparent;
+}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 160px 40px 100px;
+  position: relative;
+}
+
+.hero-inner {
+  max-width: 1100px;
+  position: relative;
+  z-index: 2;
+}
+
+.badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  background: rgba(255,10,60,0.08);
+  border: 1px solid var(--border-hi);
+  font-family: var(--font-h);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red-0);
+  margin-bottom: 40px;
+  box-shadow: 0 0 30px rgba(255,10,60,0.2);
+  animation: fadeUp 1s ease both;
+}
+.badge .dot {
+  width: 6px; height: 6px;
+  background: var(--red-0);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--red-0);
+  animation: pulse 1.4s infinite;
+}
+
+.hero h1 {
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-size: clamp(30px, 4.6vw, 64px);
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-bottom: 22px;
+  background: linear-gradient(135deg, #ffffff 0%, #ffd0da 30%, var(--red-0) 65%, var(--red-1) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 40px rgba(255,10,60,0.35));
+  animation: fadeUp 1.1s .1s ease both;
+}
+.hero h1 .accent { display: block; font-weight: 800; }
+
+.hero h1 .money {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--red-0), #ff6b8f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+  position: relative;
+  padding: 0 4px;
+}
+.hero h1 .money::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 4px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red-0), transparent);
+  opacity: 0.6;
+}
+
+.hero p.sub {
+  font-family: var(--font-q);
+  font-style: italic;
+  font-size: clamp(16px, 1.8vw, 20px);
+  color: var(--text-1);
+  max-width: 680px;
+  margin: 0 auto 46px;
+  opacity: 0.85;
+  animation: fadeUp 1.2s .25s ease both;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 1.2s .4s ease both;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 36px;
+  border-radius: 12px;
+  font-family: var(--font-h);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all .4s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn svg { width: 16px; height: 16px; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--red-0), var(--red-1));
+  color: #fff;
+  box-shadow: 0 10px 40px rgba(255,10,60,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transition: left .7s ease;
+}
+.btn-primary:hover::after { left: 100%; }
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 60px rgba(255,10,60,0.7), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.btn-ghost {
+  background: rgba(255,10,60,0.05);
+  color: #fff;
+  border: 1px solid var(--border-hi);
+  backdrop-filter: blur(10px);
+}
+.btn-ghost:hover {
+  background: rgba(255,10,60,0.15);
+  border-color: var(--red-0);
+  box-shadow: 0 0 40px rgba(255,10,60,0.4);
+  transform: translateY(-3px);
+}
+.btn-ghost svg { transition: transform .3s ease; }
+.btn-ghost:hover svg { transform: scale(1.1); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   FEATURES
+============================================================ */
+.features {
+  padding: 100px 48px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.section-head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 60px;
+}
+.section-label {
+  font-family: var(--font-h);
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--red-0);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: block;
+}
+.section-head h2 {
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-size: clamp(28px, 3.5vw, 46px);
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-bottom: 18px;
+  background: linear-gradient(135deg, #fff, #ffb8c6 60%, var(--red-0));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.section-head p {
+  color: var(--text-2);
+  font-size: 15px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.feature-card {
+  padding: 34px 28px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(21,4,8,0.85), rgba(5,3,5,0.9));
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  transition: all .5s var(--ease);
+}
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, var(--red-0), transparent);
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.feature-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--border-hi);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.7), var(--glow);
+}
+.feature-card:hover::before { opacity: 1; }
+
+.feature-icon {
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,10,60,0.15), rgba(74,0,12,0.2));
+  border: 1px solid var(--border-hi);
+  margin-bottom: 22px;
+  transition: all .4s ease;
+}
+.feature-icon svg {
+  width: 24px; height: 24px;
+  stroke: var(--red-0);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.feature-card:hover .feature-icon {
+  background: linear-gradient(135deg, var(--red-0), var(--red-1));
+  box-shadow: 0 0 30px rgba(255,10,60,0.55);
+}
+.feature-card:hover .feature-icon svg { stroke: #fff; }
+
+.feature-card h3 {
+  font-family: var(--font-h);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.feature-card p {
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   PRICING
+============================================================ */
+.pricing {
+  padding: 100px 48px 140px;
+  position: relative;
+}
+
+.pricing-card {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 60px 48px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba(30,5,12,0.95), rgba(8,3,5,0.98));
+  border: 1px solid var(--border-hi);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.85), 0 0 100px rgba(255,10,60,0.25);
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255,10,60,0.15) 60deg, transparent 120deg);
+  animation: rotateGlow 8s linear infinite;
+  pointer-events: none;
+}
+@keyframes rotateGlow {
+  to { transform: rotate(360deg); }
+}
+.pricing-card > * { position: relative; z-index: 1; }
+
+.pricing-label {
+  font-family: var(--font-h);
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--red-0);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: block;
+}
+
+.pricing-card h2 {
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.3px;
+  color: #fff;
+  margin-bottom: 30px;
+  line-height: 1.2;
+}
+
+.price-tag {
+  font-family: var(--font-h);
+  font-weight: 800;
+  font-size: clamp(64px, 9vw, 110px);
+  line-height: 1;
+  letter-spacing: -3px;
+  background: linear-gradient(135deg, #fff 0%, #ffb8c6 40%, var(--red-0) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 40px rgba(255,10,60,0.4));
+  margin-bottom: 8px;
+}
+.price-tag .currency { font-size: 0.4em; font-weight: 600; }
+
+.price-note {
+  color: var(--text-2);
+  font-size: 14px;
+  margin-bottom: 40px;
+}
+
+.price-list {
+  list-style: none;
+  text-align: left;
+  margin: 0 auto 40px;
+  max-width: 400px;
+}
+.price-list li {
+  padding: 10px 0;
+  color: var(--text-1);
+  font-size: 14.5px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.price-list li::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--red-0);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--red-0);
+  flex-shrink: 0;
+}
+
+.pricing-card .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 20px 40px;
+  font-size: 15px;
+  border-radius: 14px;
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer {
+  padding: 60px 48px 40px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  background: linear-gradient(180deg, transparent, rgba(21,4,8,0.5));
+}
+footer p {
+  font-size: 12.5px;
+  color: var(--text-2);
+  letter-spacing: 0.5px;
+}
+footer p span { color: var(--red-0); }
+
+/* ============================================================
+   MODAL
+============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(5, 2, 4, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .4s ease, visibility .4s ease;
+}
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  max-width: 560px;
+  width: 100%;
+  padding: 52px 44px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(30,5,12,0.98), rgba(8,3,5,0.99));
+  border: 1px solid var(--border-hi);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.9), 0 0 90px rgba(255,10,60,0.35);
+  transform: scale(0.92) translateY(20px);
+  transition: transform .45s var(--ease);
+}
+.modal-overlay.active .modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red-0), transparent);
+}
+
+.modal-close {
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(255,10,60,0.05);
+  color: var(--text-1);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .3s ease;
+  font-family: var(--font-b);
+}
+.modal-close:hover {
+  background: var(--red-0);
+  color: #fff;
+  border-color: var(--red-0);
+  transform: rotate(90deg);
+  box-shadow: 0 0 25px rgba(255,10,60,0.6);
+}
+
+.modal-icon {
+  width: 64px; height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--red-0), var(--red-1));
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 26px;
+  box-shadow: 0 10px 40px rgba(255,10,60,0.5);
+}
+.modal-icon svg {
+  width: 30px; height: 30px;
+  stroke: #fff; fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.modal h3 {
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.3px;
+  color: #fff;
+  margin-bottom: 14px;
+  line-height: 1.25;
+}
+.modal p {
+  color: var(--text-1);
+  font-size: 15px;
+  line-height: 1.75;
+  margin-bottom: 30px;
+}
+.modal p b { color: var(--red-0); font-weight: 600; }
+
+.modal .btn { width: 100%; justify-content: center; }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 900px) {
+  .nav { padding: 14px 22px; }
+  .nav-links { display: none; }
+  .hero { padding: 130px 24px 80px; }
+  .features { padding: 70px 24px; }
+  .pricing { padding: 70px 24px 90px; }
+  .pricing-card { padding: 44px 28px; }
+  .modal { padding: 40px 28px; }
+  footer { padding: 50px 24px 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ ЗВЁЗДНЫЙ ФОН ============ -->
+<canvas id="stars"></canvas>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <a href="#" class="logo">WEBCRAFT</a>
+  <div class="nav-links">
+    <a href="#features">Что внутри</a>
+    <a href="#pricing">Стоимость</a>
+    <a href="#" class="nav-cta" data-modal="feedback">Связаться</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="badge"><span class="dot"></span> нейронки + веб</div>
+    <h1>
+      Хочешь научу тебя создавать
+      <span class="accent">востребованные сайты за 10–20 минут,</span>
+      и зарабатывать <span class="money">15 000 ₽</span> за один проект.
+    </h1>
+    <p class="sub">Никакого HTML, CSS и языков программирования. Ты просто говоришь нейронке, что хочешь — она делает крутой сайт. Ты — управляешь и получаешь деньги.</p>
+    <div class="hero-cta">
+      <button class="btn btn-ghost" data-modal="questions">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Вопросы
+      </button>
+      <button class="btn btn-ghost" data-modal="feedback">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Обратная связь
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ FEATURES ============ -->
+<section class="features" id="features">
+  <div class="section-head">
+    <span class="section-label">// что внутри</span>
+    <h2>Нейронка делает сайт —<br>ты получаешь деньги</h2>
+    <p>Курс состоит из коротких уроков, где я показываю, как заставить нейронку делать всю работу за тебя.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0 0 8v1a4 4 0 0 0 8 0v-1a4 4 0 0 0 0-8V6a4 4 0 0 0-4-4z"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <h3>Нейронка вместо кода</h3>
+      <p>Никакого HTML, CSS и JavaScript. Всю работу делает нейросеть — ты только описываешь, что хочешь.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+      </div>
+      <h3>Промпты, которые работают</h3>
+      <p>Дам готовые запросы, с которых получаются красивые сайты с первого раза. Без переделок.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <h3>Крутые сайты за 10–20 мин</h3>
+      <p>Заходишь в нейронку, вставляешь промпт, получаешь готовый сайт. Реально 10–20 минут на проект.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <h3>Хостинг и домен</h3>
+      <p>Как за 5 минут выложить сайт в интернет бесплатно, чтобы клиент сразу его увидел.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <h3>Кому продавать</h3>
+      <p>Где искать людей, которым нужен сайт. Что им писать, чтобы они согласились и заплатили.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h3>Поддержка в Telegram</h3>
+      <p>Закрытый чат, где я лично отвечаю на вопросы и помогаю с первым заказом.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing" id="pricing">
+  <div class="section-head">
+    <span class="section-label">// стоимость</span>
+    <h2>Полный доступ ко всему курсу</h2>
+    <p>Один платёж — и ты получаешь все уроки, промпты и доступ в закрытый чат навсегда.</p>
+  </div>
+
+  <div class="pricing-card">
+    <span class="pricing-label">// full access</span>
+    <h2>Курс «Сайты нейронкой за 10–20 минут»</h2>
+
+    <div class="price-tag">250<span class="currency"> ₽</span></div>
+    <div class="price-note">разовый платёж, доступ навсегда</div>
+
+    <ul class="price-list">
+      <li>Все уроки курса — 12+ видео и статей</li>
+      <li>Готовые промпты для нейронки</li>
+      <li>Шаблоны крутых сайтов под разные темы</li>
+      <li>Закрытый Telegram-чат с поддержкой</li>
+      <li>Помощь с первым заказом лично от меня</li>
+    </ul>
+
+    <a href="https://t.me/+CaDQKKUoBHE2N2Ey" target="_blank" rel="noopener" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      Оплатить и войти в курс
+    </a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <p>© 2026 <span>WEBCRAFT</span> — курс по созданию сайтов нейронкой. Все права защищены.</p>
+</footer>
+
+<!-- ============ МОДАЛКА: ВОПРОСЫ ============ -->
+<div class="modal-overlay" id="modal-questions">
+  <div class="modal">
+    <button class="modal-close" data-close>✕</button>
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3>Частые вопросы</h3>
+    <p>
+      <b>Надо ли уметь программировать?</b> Нет. Всё делает нейросеть, а ты просто говоришь ей, что нужно.<br><br>
+      <b>Нужно ли учить HTML или CSS?</b> Нет, курс построен так, что ты обходишься без них. Только промпты.<br><br>
+      <b>Сколько времени займёт обучение?</b> От 3 до 7 дней, если смотреть по уроку в день.<br><br>
+      <b>Реально заработать 15 000 ₽ за сайт?</b> Да — это средняя цена простого лендинга.<br><br>
+      <b>Что делать после оплаты?</b> Напиши мне в Telegram — пришлю доступ в курс.
+    </p>
+    <a href="https://t.me/+CaDQKKUoBHE2N2Ey" target="_blank" rel="noopener" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Открыть Telegram-канал
+    </a>
+  </div>
+</div>
+
+<!-- ============ МОДАЛКА: ОБРАТНАЯ СВЯЗЬ ============ -->
+<div class="modal-overlay" id="modal-feedback">
+  <div class="modal">
+    <button class="modal-close" data-close>✕</button>
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <h3>Напиши мне в Telegram</h3>
+    <p>
+      Если есть вопросы по курсу, хочешь узнать подробности или уже готов начать — переходи по кнопке ниже. Отвечаю лично и быстро.<br><br>
+      Там же публикую <b>бесплатные уроки</b>, промпты и кейсы — как делать крутые сайты нейронкой.
+    </p>
+    <a href="https://t.me/+CaDQKKUoBHE2N2Ey" target="_blank" rel="noopener" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Перейти в Telegram
+    </a>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   1. ЗВЁЗДНЫЙ ФОН (Canvas)
+================================================================ */
+(function initStars() {
+  const canvas = document.getElementById('stars');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let w, h, stars = [];
+  const STAR_COUNT = 140;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function makeStars() {
+    stars = [];
+    for (let i = 0; i < STAR_COUNT; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.6 + 0.3,
+        a: Math.random() * 0.7 + 0.2,
+        da: (Math.random() - 0.5) * 0.02,
+        vy: Math.random() * 0.15 + 0.02,
+        vx: (Math.random() - 0.5) * 0.05
+      });
+    }
+  }
+  makeStars();
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    const t = Date.now() * 0.0003;
+    const nebulas = [
+      { x: w * 0.2 + Math.sin(t) * 60, y: h * 0.3 + Math.cos(t * 0.8) * 40, c: 'rgba(255,10,60,0.10)' },
+      { x: w * 0.8 + Math.cos(t * 1.2) * 70, y: h * 0.7 + Math.sin(t) * 50, c: 'rgba(200,0,40,0.12)' }
+    ];
+    nebulas.forEach(n => {
+      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 260);
+      g.addColorStop(0, n.c);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 260, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    stars.forEach(s => {
+      s.a += s.da;
+      if (s.a > 0.9 || s.a < 0.15) s.da *= -1;
+      s.y += s.vy;
+      s.x += s.vx;
+      if (s.y > h + 5) { s.y = -5; s.x = Math.random() * w; }
+      if (s.x > w + 5) s.x = -5;
+      if (s.x < -5) s.x = w + 5;
+
+      const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
+      glow.addColorStop(0, `rgba(255, 80, 120, ${s.a})`);
+      glow.addColorStop(1, 'rgba(255, 10, 60, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = `rgba(255, 220, 230, ${s.a})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ================================================================
+   2. МОДАЛКИ
+================================================================ */
+(function initModals() {
+  const overlayMap = {
+    questions: document.getElementById('modal-questions'),
+    feedback: document.getElementById('modal-feedback')
+  };
+
+  function openModal(key) {
+    const el = overlayMap[key];
+    if (!el) return;
+    el.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeAll() {
+    document.querySelectorAll('.modal-overlay').forEach(o => o.classList.remove('active'));
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('[data-modal]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const key = btn.dataset.modal;
+      openModal(key);
+    });
+  });
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', closeAll);
+  });
+
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeAll();
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAll();
+  });
+})();
+
+/* ================================================================
+   3. ПОЯВЛЕНИЕ КАРТОЧЕК ПРИ СКРОЛЛЕ
+================================================================ */
+(function initReveal() {
+  const items = document.querySelectorAll('.feature-card, .pricing-card');
+  items.forEach((el) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = `opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1)`;
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }, i * 80);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+  items.forEach(el => io.observe(el));
+})();
+
+/* ================================================================
+   4. ПАРАЛЛАКС ЗАГОЛОВКА
+================================================================ */
+(function initParallax() {
+  const h1 = document.querySelector('.hero h1');
+  if (!h1) return;
+  window.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    h1.style.transform = `translate(${x * 5}px, ${y * 5}px)`;
+  });
+})();
+</script>
+
+</body>
+</html>
